@@ -202,17 +202,21 @@ function Profile() {
       {/* Hidden file inputs */}
       <input 
         type="file" 
+        id="cover-upload"
         ref={coverInputRef} 
         onChange={handleCoverUpload} 
         accept="image/*" 
         className="hidden" 
+        capture="environment"
       />
       <input 
         type="file" 
+        id="profile-upload"
         ref={profileInputRef} 
         onChange={handleProfileUpload} 
         accept="image/*" 
         className="hidden" 
+        capture="environment"
       />
 
       {/* Share Toast */}
@@ -232,12 +236,12 @@ function Profile() {
             <div className="absolute inset-0" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '30px 30px'}}></div>
           </div>
         )}
-        <button 
-          onClick={() => coverInputRef.current.click()}
-          className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2"
+        <label 
+          htmlFor="cover-upload"
+          className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2 cursor-pointer"
         >
           <i className="fas fa-camera"></i> Change Cover
-        </button>
+        </label>
       </div>
 
       {/* Profile Header */}
@@ -254,12 +258,12 @@ function Profile() {
                 )}
               </div>
               {/* Edit profile pic overlay */}
-              <button 
-                onClick={() => profileInputRef.current.click()}
-                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+              <label 
+                htmlFor="profile-upload"
+                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 sm:opacity-0 active:opacity-100 transition-opacity duration-200 cursor-pointer"
               >
                 <i className="fas fa-camera text-white text-xl"></i>
-              </button>
+              </label>
               {/* Online indicator */}
               <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
             </div>
