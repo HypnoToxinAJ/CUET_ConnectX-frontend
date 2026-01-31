@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import sayedProfile from '../assets/images/sayed.jpg'
 import coverDefault from '../assets/images/cover.png'
 
@@ -11,10 +11,6 @@ function Profile() {
   
   // Check if demo user (Md Abu Sayed)
   const isDemoUser = user?.fullName === 'Md Abu Sayed'
-  
-  // Image upload refs
-  const coverInputRef = useRef(null)
-  const profileInputRef = useRef(null)
   
   // Image states - only show default images for demo user
   const [coverImage, setCoverImage] = useState(isDemoUser ? coverDefault : null)
@@ -199,23 +195,6 @@ function Profile() {
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen relative">
-      {/* Hidden file inputs */}
-      <input 
-        type="file" 
-        id="cover-upload"
-        ref={coverInputRef} 
-        onChange={handleCoverUpload} 
-        accept="image/*" 
-        style={{ display: 'none' }}
-      />
-      <input 
-        type="file" 
-        id="profile-upload"
-        ref={profileInputRef} 
-        onChange={handleProfileUpload} 
-        accept="image/*" 
-        style={{ display: 'none' }}
-      />
 
       {/* Share Toast */}
       {showShareToast && (
@@ -235,10 +214,14 @@ function Profile() {
           </div>
         )}
         <label 
-          htmlFor="cover-upload"
           className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2 cursor-pointer z-10"
-          style={{ touchAction: 'manipulation' }}
         >
+          <input 
+            type="file" 
+            onChange={handleCoverUpload} 
+            accept="image/*" 
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
           <i className="fas fa-camera"></i> Change Cover
         </label>
       </div>
@@ -258,10 +241,14 @@ function Profile() {
               </div>
               {/* Edit profile pic overlay */}
               <label 
-                htmlFor="profile-upload"
-                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
-                style={{ touchAction: 'manipulation' }}
+                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10 overflow-hidden"
               >
+                <input 
+                  type="file" 
+                  onChange={handleProfileUpload} 
+                  accept="image/*" 
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
                 <i className="fas fa-camera text-white text-xl"></i>
               </label>
               {/* Online indicator */}
