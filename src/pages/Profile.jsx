@@ -15,6 +15,8 @@ function Profile() {
   // Image states - only show default images for demo user
   const [coverImage, setCoverImage] = useState(isDemoUser ? coverDefault : null)
   const [profileImage, setProfileImage] = useState(isDemoUser ? sayedProfile : null)
+  const [isUploadingCover, setIsUploadingCover] = useState(false)
+  const [isUploadingProfile, setIsUploadingProfile] = useState(false)
   
   // Get default profile data for a user
   const getDefaultProfileData = (userData) => ({
@@ -121,26 +123,68 @@ function Profile() {
 
   // Handle cover image upload
   const handleCoverUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setCoverImage(reader.result)
-      }
-      reader.readAsDataURL(file)
+    const file = e.target.files?.[0]
+    if (!file) return
+    
+    setIsUploadingCover(true)
+    
+    // Compress and resize image for better performance
+    const img = new Image()
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    img.onload = () => {
+      // Resize to max 1200px width for cover
+      const maxWidth = 1200
+      const scale = Math.min(1, maxWidth / img.width)
+      canvas.width = img.width * scale
+      canvas.height = img.height * scale
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      
+      const compressedImage = canvas.toDataURL('image/jpeg', 0.7)
+      setCoverImage(compressedImage)
+      setIsUploadingCover(false)
     }
+    
+    img.onerror = () => {
+      alert('Failed to load image. Please try another.')
+      setIsUploadingCover(false)
+    }
+    
+    img.src = URL.createObjectURL(file)
   }
 
   // Handle profile image upload
   const handleProfileUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfileImage(reader.result)
-      }
-      reader.readAsDataURL(file)
+    const file = e.target.files?.[0]
+    if (!file) return
+    
+    setIsUploadingProfile(true)
+    
+    // Compress and resize image for better performance
+    const img = new Image()
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    img.onload = () => {
+      // Resize to max 400px for profile pic
+      const maxSize = 400
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height))
+      canvas.width = img.width * scale
+      canvas.height = img.height * scale
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      
+      const compressedImage = canvas.toDataURL('image/jpeg', 0.8)
+      setProfileImage(compressedImage)
+      setIsUploadingProfile(false)
     }
+    
+    img.onerror = () => {
+      alert('Failed to load image. Please try another.')
+      setIsUploadingProfile(false)
+    }
+    
+    img.src = URL.createObjectURL(file)
   }
 
   const handleShare = () => {
@@ -208,9 +252,17 @@ function Profile() {
         className="h-48 bg-gradient-to-r from-teal-800 via-teal-600 to-teal-800 relative overflow-hidden"
         style={coverImage ? { backgroundImage: `url(${coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
       >
-        {!coverImage && (
+        {!coverImage && !isUploadingCover && (
           <div className="absolute inset-0 opacity-20">
             <div className="absolute inset-0" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '30px 30px'}}></div>
+          </div>
+        )}
+        {isUploadingCover && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <div className="text-white text-center">
+              <i className="fas fa-spinner fa-spin text-3xl mb-2"></i>
+              <p>Uploading...</p>
+            </div>
           </div>
         )}
         <label 
@@ -221,8 +273,9 @@ function Profile() {
             onChange={handleCoverUpload} 
             accept="image/*" 
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            disabled={isUploadingCover}
           />
-          <i className="fas fa-camera"></i> Change Cover
+          <i className={`fas ${isUploadingCover ? 'fa-spinner fa-spin' : 'fa-camera'}`}></i> {isUploadingCover ? 'Uploading...' : 'Change Cover'}
         </label>
       </div>
 
@@ -233,7 +286,9 @@ function Profile() {
             {/* Avatar */}
             <div className="relative group">
               <div className="w-28 h-28 rounded-full border-4 border-white dark:border-gray-800 shadow-lg bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white text-3xl font-bold overflow-hidden">
-                {profileImage ? (
+                {isUploadingProfile ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : profileImage ? (
                   <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2)
