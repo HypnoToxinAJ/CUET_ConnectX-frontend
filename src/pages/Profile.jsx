@@ -20,10 +20,31 @@ function Profile() {
   const [coverImage, setCoverImage] = useState(isDemoUser ? coverDefault : null)
   const [profileImage, setProfileImage] = useState(isDemoUser ? sayedProfile : null)
   
-  // Profile data state
-  const [profileData, setProfileData] = useState({
+  // Get default profile data for a user
+  const getDefaultProfileData = (userData) => ({
+    about: '',
+    email: userData?.email || '',
+    address: '',
+    socialLinks: {
+      linkedin: '',
+      github: '',
+      facebook: '',
+      portfolio: ''
+    },
+    currentProfession: '',
+    previousProfession: '',
+    researchInterests: [],
+    education: [
+      { id: 1, degree: 'Bachelor of Science', institution: 'Chittagong University of Engineering & Technology', year: `${userData?.batch || 2022} - Present`, major: 'Computer Science', focus: '' }
+    ],
+    skills: [],
+    followers: 0
+  })
+
+  // Demo user profile data
+  const getDemoProfileData = () => ({
     about: 'Passionate computer science student interested in machine learning and web development. Looking for internship opportunities and research collaborations.',
-    email: 'sayed@example.com',
+    email: 'u2204115@student.cuet.ac.bd',
     address: 'Dhaka, Bangladesh',
     socialLinks: {
       linkedin: 'https://linkedin.com/in/mdabusayed',
@@ -42,6 +63,21 @@ function Profile() {
     followers: 245
   })
 
+  // Load profile data from localStorage or use defaults
+  const loadProfileData = () => {
+    if (!user) return getDefaultProfileData(null)
+    if (isDemoUser) return getDemoProfileData()
+    
+    const savedProfile = localStorage.getItem(`profileData_${user.studentId}`)
+    if (savedProfile) {
+      return JSON.parse(savedProfile)
+    }
+    return getDefaultProfileData(user)
+  }
+
+  // Profile data state
+  const [profileData, setProfileData] = useState(loadProfileData)
+
   // Edit modal states
   const [editModal, setEditModal] = useState({ show: false, section: '', data: null })
   const [addEducationModal, setAddEducationModal] = useState(false)
@@ -52,6 +88,40 @@ function Profile() {
       navigate('/login')
     }
   }, [isLoggedIn, navigate])
+
+  // Reload profile data when user changes
+  useEffect(() => {
+    if (user) {
+      setProfileData(loadProfileData())
+      // Also reload images from localStorage for non-demo users
+      if (!isDemoUser) {
+        const savedCover = localStorage.getItem(`coverImage_${user.studentId}`)
+        const savedProfile = localStorage.getItem(`profileImage_${user.studentId}`)
+        setCoverImage(savedCover || null)
+        setProfileImage(savedProfile || null)
+      }
+    }
+  }, [user?.studentId])
+
+  // Save profile data to localStorage when it changes (for non-demo users)
+  useEffect(() => {
+    if (user && !isDemoUser) {
+      localStorage.setItem(`profileData_${user.studentId}`, JSON.stringify(profileData))
+    }
+  }, [profileData, user?.studentId, isDemoUser])
+
+  // Save images to localStorage when they change (for non-demo users)
+  useEffect(() => {
+    if (user && !isDemoUser && coverImage) {
+      localStorage.setItem(`coverImage_${user.studentId}`, coverImage)
+    }
+  }, [coverImage, user?.studentId, isDemoUser])
+
+  useEffect(() => {
+    if (user && !isDemoUser && profileImage) {
+      localStorage.setItem(`profileImage_${user.studentId}`, profileImage)
+    }
+  }, [profileImage, user?.studentId, isDemoUser])
 
   // Handle cover image upload
   const handleCoverUpload = (e) => {
