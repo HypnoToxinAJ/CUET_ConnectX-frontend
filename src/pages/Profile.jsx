@@ -206,8 +206,7 @@ function Profile() {
         ref={coverInputRef} 
         onChange={handleCoverUpload} 
         accept="image/*" 
-        className="hidden" 
-        capture="environment"
+        style={{ display: 'none' }}
       />
       <input 
         type="file" 
@@ -215,8 +214,7 @@ function Profile() {
         ref={profileInputRef} 
         onChange={handleProfileUpload} 
         accept="image/*" 
-        className="hidden" 
-        capture="environment"
+        style={{ display: 'none' }}
       />
 
       {/* Share Toast */}
@@ -238,7 +236,8 @@ function Profile() {
         )}
         <label 
           htmlFor="cover-upload"
-          className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2 cursor-pointer"
+          className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2 cursor-pointer z-10"
+          style={{ touchAction: 'manipulation' }}
         >
           <i className="fas fa-camera"></i> Change Cover
         </label>
@@ -260,7 +259,8 @@ function Profile() {
               {/* Edit profile pic overlay */}
               <label 
                 htmlFor="profile-upload"
-                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 sm:opacity-0 active:opacity-100 transition-opacity duration-200 cursor-pointer"
+                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
+                style={{ touchAction: 'manipulation' }}
               >
                 <i className="fas fa-camera text-white text-xl"></i>
               </label>
