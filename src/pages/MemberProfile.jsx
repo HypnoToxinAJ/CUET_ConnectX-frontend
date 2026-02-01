@@ -5,9 +5,11 @@ import { useState, useEffect } from 'react'
 function MemberProfile() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { isLoggedIn } = useAuth()
-  const [isFollowing, setIsFollowing] = useState(false)
+  const { isLoggedIn, isFollowingMember, followMember, unfollowMember } = useAuth()
   const [showShareToast, setShowShareToast] = useState(false)
+
+  // Check if following this member
+  const isFollowing = isFollowingMember(id)
 
   // Sample member data - in a real app this would come from an API
   const membersData = {
@@ -44,7 +46,11 @@ function MemberProfile() {
   }
 
   const handleFollow = () => {
-    setIsFollowing(!isFollowing)
+    if (isFollowing) {
+      unfollowMember(id)
+    } else {
+      followMember(id)
+    }
   }
 
   const handleShare = () => {

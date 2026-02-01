@@ -1,13 +1,25 @@
 import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import sayedProfile from '../assets/images/sayed.jpg'
 import coverDefault from '../assets/images/cover.png'
 
+// Sample member data for following list (same as MemberProfile)
+const membersData = {
+  1: { id: 1, name: 'Anupam Paul', initials: 'AP', type: 'Student', department: 'CSE', batch: '2022' },
+  2: { id: 2, name: 'MD Abu Sayed', initials: 'AS', type: 'Student', department: 'CSE', batch: '2022' },
+  3: { id: 3, name: 'Fatima Rahman', initials: 'FR', type: 'Student', department: 'EEE', batch: '2023' },
+  4: { id: 4, name: 'Karim Hassan', initials: 'KH', type: 'Student', department: 'ME', batch: '2021' },
+  5: { id: 5, name: 'Abir Hassan', initials: 'AH', type: 'Alumni', department: 'CSE', batch: '2018' },
+  6: { id: 6, name: 'Fahim Hassan', initials: 'FH', type: 'Alumni', department: 'CSE', batch: '2007' },
+  7: { id: 7, name: 'Nusrat Jahan', initials: 'NJ', type: 'Alumni', department: 'CSE', batch: '2019' },
+}
+
 function Profile() {
-  const { user, isLoggedIn } = useAuth()
+  const { user, isLoggedIn, following, unfollowMember } = useAuth()
   const navigate = useNavigate()
   const [showShareToast, setShowShareToast] = useState(false)
+  const [showFollowingModal, setShowFollowingModal] = useState(false)
   
   // Check if demo user (Md Abu Sayed)
   const isDemoUser = user?.fullName === 'Md Abu Sayed'
@@ -237,8 +249,62 @@ function Profile() {
 
   if (!user) return null
 
+  // Get following members data
+  const followingMembers = following.map(id => membersData[id]).filter(Boolean)
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen relative">
+
+      {/* Following Modal */}
+      {showFollowingModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowFollowingModal(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Following ({following.length})</h3>
+              <button onClick={() => setShowFollowingModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <i className="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-96 p-4">
+              {followingMembers.length === 0 ? (
+                <div className="text-center py-8">
+                  <i className="fas fa-user-friends text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                  <p className="text-gray-500 dark:text-gray-400">You're not following anyone yet</p>
+                  <Link to="/community" className="text-teal-600 hover:text-teal-700 text-sm mt-2 inline-block">
+                    Discover members to follow
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {followingMembers.map(member => (
+                    <div key={member.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                      <Link 
+                        to={`/member/${member.id}`} 
+                        onClick={() => setShowFollowingModal(false)}
+                        className="flex items-center gap-3 flex-1"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white font-semibold text-sm">
+                          {member.initials}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-800 dark:text-white">{member.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{member.type} • {member.department} • Batch {member.batch}</p>
+                        </div>
+                      </Link>
+                      <button 
+                        onClick={() => unfollowMember(member.id)}
+                        className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-300 transition-colors"
+                      >
+                        Unfollow
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Share Toast */}
       {showShareToast && (
@@ -346,10 +412,19 @@ function Profile() {
             </div>
           </div>
 
-          {/* Followers */}
-          <div className="mt-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-            <p className="text-2xl font-bold text-gray-800 dark:text-white">{profileData.followers}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
+          {/* Followers & Following */}
+          <div className="mt-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex gap-6">
+            <div>
+              <p className="text-2xl font-bold text-gray-800 dark:text-white">{profileData.followers}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
+            </div>
+            <div 
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setShowFollowingModal(true)}
+            >
+              <p className="text-2xl font-bold text-gray-800 dark:text-white">{following.length}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Following</p>
+            </div>
           </div>
         </div>
 

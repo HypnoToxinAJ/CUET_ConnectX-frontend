@@ -16,14 +16,22 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [registeredUsers, setRegisteredUsers] = useState([])
+  const [following, setFollowing] = useState([]) // List of member IDs the user follows
 
   useEffect(() => {
     // Load current user
     const savedUser = localStorage.getItem('currentUser')
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true'
     if (savedUser && loggedIn) {
-      setUser(JSON.parse(savedUser))
+      const parsedUser = JSON.parse(savedUser)
+      setUser(parsedUser)
       setIsLoggedIn(true)
+      
+      // Load following list for this user
+      const savedFollowing = localStorage.getItem(`following_${parsedUser.studentId}`)
+      if (savedFollowing) {
+        setFollowing(JSON.parse(savedFollowing))
+      }
     }
     
     // Load registered users from localStorage
@@ -99,10 +107,51 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('isLoggedIn')
     setUser(null)
     setIsLoggedIn(false)
+    setFollowing([])
   }
 
+  // Follow a member
+  const followMember = (memberId) => {
+    if (!user) return
+    const memberIdStr = String(memberId)
+    if (!following.includes(memberIdStr)) {
+      const newFollowing = [...following, memberIdStr]
+      setFollowing(newFollowing)
+      localStorage.setItem(`following_${user.studentId}`, JSON.stringify(newFollowing))
+    }
+  }
+
+  // Unfollow a member
+  const unfollowMember = (memberId) => {
+    if (!user) return
+    const memberIdStr = String(memberId)
+    const newFollowing = following.filter(id => id !== memberIdStr)
+    setFollowing(newFollowing)
+    localStorage.setItem(`following_${user.studentId}`, JSON.stringify(newFollowing))
+  }
+
+  // Check if following a member
+  const isFollowingMember = (memberId) => {
+    return following.includes(String(memberId))
+  }
+
+  // Get following list
+  const getFollowingList = () => following
+
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, login, logout, register, updateUser }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isLoggedIn, 
+      login, 
+      logout, 
+      register, 
+      updateUser,
+      following,
+      followMember,
+      unfollowMember,
+      isFollowingMember,
+      getFollowingList
+    }}>
       {children}
     </AuthContext.Provider>
   )
