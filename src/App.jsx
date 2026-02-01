@@ -14,6 +14,7 @@ import Profile from './pages/Profile'
 import MemberProfile from './pages/MemberProfile'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Terms from './pages/Terms'
+import Cookies from './pages/Cookies'
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -45,6 +46,7 @@ function App() {
           <Route path="/member/:id" element={<MemberProfile />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/cookies" element={<Cookies />} />
         </Routes>
       </main>
       <Footer />

@@ -95,7 +95,7 @@ function Footer() {
             <div className="flex items-center gap-6 text-sm text-gray-500">
               <Link to="/terms" className="hover:text-teal-400 transition-colors">Terms</Link>
               <Link to="/privacy" className="hover:text-teal-400 transition-colors">Privacy</Link>
-              <Link to="/privacy" className="hover:text-teal-400 transition-colors">Cookies</Link>
+              <Link to="/cookies" className="hover:text-teal-400 transition-colors">Cookies</Link>
             </div>
           </div>
         </div>
