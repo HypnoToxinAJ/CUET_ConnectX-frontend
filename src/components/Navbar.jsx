@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -10,6 +10,41 @@ function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const { user, isLoggedIn, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
+  const [profileImage, setProfileImage] = useState(null)
+
+  // Check if demo user
+  const isDemoUser = user?.fullName === 'Md Abu Sayed'
+
+  // Load profile image from localStorage
+  useEffect(() => {
+    if (user && !isDemoUser) {
+      const savedImage = localStorage.getItem(`profileImage_${user.studentId}`)
+      setProfileImage(savedImage)
+    } else if (isDemoUser) {
+      setProfileImage(sayedProfile)
+    } else {
+      setProfileImage(null)
+    }
+  }, [user?.studentId, isDemoUser])
+
+  // Listen for storage changes (when profile image is updated)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      if (user && !isDemoUser) {
+        const savedImage = localStorage.getItem(`profileImage_${user.studentId}`)
+        setProfileImage(savedImage)
+      }
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also check periodically for same-tab updates
+    const interval = setInterval(handleStorageChange, 1000)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      clearInterval(interval)
+    }
+  }, [user?.studentId, isDemoUser])
 
   const navLinks = [
     { to: '/', label: 'Home', icon: 'fa-home' },
@@ -64,8 +99,8 @@ function Navbar() {
             {isLoggedIn ? (
               <div className="relative">
                 <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-2 p-1.5 pr-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
-                  {user?.fullName === 'Md Abu Sayed' ? (
-                    <img src={sayedProfile} alt="User" className="w-9 h-9 rounded-full border-2 border-teal-500 object-cover" />
+                  {profileImage ? (
+                    <img src={profileImage} alt="User" className="w-9 h-9 rounded-full border-2 border-teal-500 object-cover" />
                   ) : (
                     <div className="w-9 h-9 rounded-full border-2 border-teal-500 bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white text-sm font-bold">
                       {user?.fullName?.split(' ').map(n => n[0]).join('').substring(0, 2) || 'U'}
