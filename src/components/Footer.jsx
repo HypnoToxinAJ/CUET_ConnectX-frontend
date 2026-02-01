@@ -50,10 +50,10 @@ function Footer() {
               Support
             </h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/faq" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> FAQ</Link></li>
+              <li><Link to="/faq" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> FAQs</Link></li>
               <li><Link to="/about" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> About Us</Link></li>
-              <li><a href="mailto:support@cuetconnectx.com" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> Contact Support</a></li>
-              <li><Link to="/" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> Privacy Policy</Link></li>
+              <li><Link to="/terms" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="text-gray-400 hover:text-teal-400 transition-colors flex items-center gap-2"><i className="fas fa-chevron-right text-xs text-teal-600"></i> Privacy Policy</Link></li>
             </ul>
           </div>
 
@@ -78,7 +78,7 @@ function Footer() {
               </a>
             </div>
             <div className="space-y-2 text-sm text-gray-400">
-              <p className="flex items-center gap-2"><i className="fas fa-envelope text-teal-500"></i> support@cuetconnectx.com</p>
+              <a href="mailto:support@cuetconnectx.com" className="flex items-center gap-2 hover:text-teal-400 transition-colors"><i className="fas fa-envelope text-teal-500"></i> Contact Support</a>
               <p className="flex items-center gap-2"><i className="fas fa-map-marker-alt text-teal-500"></i> CUET, Chittagong, Bangladesh</p>
             </div>
           </div>
@@ -93,9 +93,9 @@ function Footer() {
               &copy; {currentYear} CUET ConnectX. All rights reserved. Made with <i className="fas fa-heart text-red-500"></i> for CUETians
             </p>
             <div className="flex items-center gap-6 text-sm text-gray-500">
-              <Link to="/" className="hover:text-teal-400 transition-colors">Terms</Link>
-              <Link to="/" className="hover:text-teal-400 transition-colors">Privacy</Link>
-              <Link to="/" className="hover:text-teal-400 transition-colors">Cookies</Link>
+              <Link to="/terms" className="hover:text-teal-400 transition-colors">Terms</Link>
+              <Link to="/privacy" className="hover:text-teal-400 transition-colors">Privacy</Link>
+              <Link to="/privacy" className="hover:text-teal-400 transition-colors">Cookies</Link>
             </div>
           </div>
         </div>

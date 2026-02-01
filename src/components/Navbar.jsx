@@ -37,12 +37,12 @@ function Navbar() {
     }
     
     window.addEventListener('storage', handleStorageChange)
-    // Also check periodically for same-tab updates
-    const interval = setInterval(handleStorageChange, 1000)
+    // Listen for custom profile image update event (for same-tab updates)
+    window.addEventListener('profileImageUpdated', handleStorageChange)
     
     return () => {
       window.removeEventListener('storage', handleStorageChange)
-      clearInterval(interval)
+      window.removeEventListener('profileImageUpdated', handleStorageChange)
     }
   }, [user?.studentId, isDemoUser])
 

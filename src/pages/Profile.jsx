@@ -22,6 +22,8 @@ function Profile() {
   const [showFollowingModal, setShowFollowingModal] = useState(false)
   const [showFollowersModal, setShowFollowersModal] = useState(false)
   const [followersList, setFollowersList] = useState([])
+  const [showCoverMenu, setShowCoverMenu] = useState(false)
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
   
   // Check if demo user (Md Abu Sayed)
   const isDemoUser = user?.fullName === 'Md Abu Sayed'
@@ -149,6 +151,8 @@ function Profile() {
   useEffect(() => {
     if (user && !isDemoUser && profileImage) {
       localStorage.setItem(`profileImage_${user.studentId}`, profileImage)
+      // Dispatch custom event to sync with navbar immediately
+      window.dispatchEvent(new Event('profileImageUpdated'))
     }
   }, [profileImage, user?.studentId, isDemoUser])
 
@@ -185,6 +189,13 @@ function Profile() {
     img.src = URL.createObjectURL(file)
   }
 
+  // Handle cover image delete
+  const handleCoverDelete = () => {
+    setCoverImage(null)
+    localStorage.removeItem(`coverImage_${user.studentId}`)
+    setShowCoverMenu(false)
+  }
+
   // Handle profile image upload
   const handleProfileUpload = (e) => {
     const file = e.target.files?.[0]
@@ -216,6 +227,15 @@ function Profile() {
     }
     
     img.src = URL.createObjectURL(file)
+  }
+
+  // Handle profile image delete
+  const handleProfileDelete = () => {
+    setProfileImage(null)
+    localStorage.removeItem(`profileImage_${user.studentId}`)
+    setShowProfileMenu(false)
+    // Dispatch custom event to sync with navbar immediately
+    window.dispatchEvent(new Event('profileImageUpdated'))
   }
 
   const handleShare = () => {
@@ -413,18 +433,45 @@ function Profile() {
             </div>
           </div>
         )}
-        <label 
-          className="absolute bottom-4 right-4 px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2 cursor-pointer z-10"
-        >
-          <input 
-            type="file" 
-            onChange={handleCoverUpload} 
-            accept="image/*" 
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            disabled={isUploadingCover}
-          />
-          <i className={`fas ${isUploadingCover ? 'fa-spinner fa-spin' : 'fa-camera'}`}></i> {isUploadingCover ? 'Uploading...' : 'Change Cover'}
-        </label>
+        {/* Cover Image Options Menu */}
+        <div className="absolute bottom-4 right-4 z-10">
+          <button 
+            onClick={() => setShowCoverMenu(!showCoverMenu)}
+            className="px-4 py-2 bg-white/20 backdrop-blur text-white rounded-xl hover:bg-white/30 transition-all duration-200 flex items-center gap-2"
+          >
+            <i className={`fas ${isUploadingCover ? 'fa-spinner fa-spin' : 'fa-camera'}`}></i> 
+            {isUploadingCover ? 'Uploading...' : 'Edit Cover'}
+            <i className="fas fa-chevron-down text-xs"></i>
+          </button>
+          {showCoverMenu && (
+            <div className="absolute bottom-full right-0 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden min-w-[160px]">
+              <label className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-200 transition-colors">
+                <input 
+                  type="file" 
+                  onChange={(e) => { handleCoverUpload(e); setShowCoverMenu(false); }} 
+                  accept="image/*" 
+                  className="hidden"
+                  disabled={isUploadingCover}
+                />
+                <i className="fas fa-upload text-teal-600 dark:text-teal-400"></i>
+                <span>Upload Photo</span>
+              </label>
+              {coverImage && (
+                <button 
+                  onClick={handleCoverDelete}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 transition-colors"
+                >
+                  <i className="fas fa-trash"></i>
+                  <span>Remove Photo</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+        {/* Click outside to close menu */}
+        {showCoverMenu && (
+          <div className="fixed inset-0 z-0" onClick={() => setShowCoverMenu(false)}></div>
+        )}
       </div>
 
       {/* Profile Header */}
@@ -442,18 +489,42 @@ function Profile() {
                   user.fullName.split(' ').map(n => n[0]).join('').substring(0, 2)
                 )}
               </div>
-              {/* Edit profile pic overlay */}
-              <label 
-                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10 overflow-hidden"
+              {/* Edit profile pic button */}
+              <button 
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="absolute inset-0 w-28 h-28 rounded-full bg-black/50 flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
               >
-                <input 
-                  type="file" 
-                  onChange={handleProfileUpload} 
-                  accept="image/*" 
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
                 <i className="fas fa-camera text-white text-xl"></i>
-              </label>
+              </button>
+              {/* Profile Image Options Menu */}
+              {showProfileMenu && (
+                <div className="absolute top-full left-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden min-w-[160px] z-50">
+                  <label className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-200 transition-colors">
+                    <input 
+                      type="file" 
+                      onChange={(e) => { handleProfileUpload(e); setShowProfileMenu(false); }} 
+                      accept="image/*" 
+                      className="hidden"
+                      disabled={isUploadingProfile}
+                    />
+                    <i className="fas fa-upload text-teal-600 dark:text-teal-400"></i>
+                    <span>Upload Photo</span>
+                  </label>
+                  {profileImage && (
+                    <button 
+                      onClick={handleProfileDelete}
+                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 transition-colors"
+                    >
+                      <i className="fas fa-trash"></i>
+                      <span>Remove Photo</span>
+                    </button>
+                  )}
+                </div>
+              )}
+              {/* Click outside to close menu */}
+              {showProfileMenu && (
+                <div className="fixed inset-0 z-40" onClick={() => setShowProfileMenu(false)}></div>
+              )}
               {/* Online indicator */}
               <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
             </div>
@@ -467,12 +538,17 @@ function Profile() {
                   <span className="px-3 py-1 bg-teal-600 text-white rounded-full text-xs font-semibold">
                     {user.userType === 'student' ? 'Current Student' : 'Alumni'}
                   </span>
+                  {user.departmentShort && (
+                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
+                      {user.departmentShort}
+                    </span>
+                  )}
                   <span className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium">
                     Batch {user.batch}
                   </span>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Student ID: {user.studentId}
+                  {user.department ? `${user.department} • ` : ''}Student ID: {user.studentId}
                 </p>
               </div>
 

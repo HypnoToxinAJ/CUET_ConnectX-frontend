@@ -12,7 +12,7 @@ function Community() {
   const navigate = useNavigate()
 
   const members = [
-    { id: 1, name: 'Anupam Paul', studentId: '2204118', batch: '2022', department: 'CSE', initials: 'AP', type: 'Student', bio: 'Passionate about AI and Machine Learning. Looking for research opportunities.', skills: [], followers: 245, location: '' },
+    { id: 1, name: 'Anupam Paul', studentId: '2204116', batch: '2022', department: 'CSE', initials: 'AP', type: 'Student', bio: 'Passionate about AI and Machine Learning. Looking for research opportunities.', skills: [], followers: 245, location: '' },
     { id: 2, name: 'MD Abu Sayed', studentId: '2204115', batch: '2022', department: 'CSE', initials: 'AS', type: 'Student', bio: 'Passionate about AI and Machine Learning. Looking for research opportunities.', skills: [], followers: 333, location: '' },
     { id: 3, name: 'Fatima Rahman', studentId: '2304201', batch: '2023', department: 'EEE', initials: 'FR', type: 'Student', bio: 'Electronics enthusiast with interest in IoT and embedded systems.', skills: [], followers: 180, location: '' },
     { id: 4, name: 'Karim Hassan', studentId: '2104306', batch: '2021', department: 'ME', initials: 'KH', type: 'Student', bio: 'Mechanical engineering student interested in robotics and automation.', skills: [], followers: 370, location: '' },

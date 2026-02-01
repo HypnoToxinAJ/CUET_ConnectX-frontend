@@ -3,10 +3,67 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import cuetLogo from '../assets/logos/CUET_Vector_Logo.svg.png'
 
+// Department code mapping
+const DEPARTMENT_CODES = {
+  '01': 'Civil Engineering',
+  '02': 'Electrical & Electronic Engineering',
+  '03': 'Mechanical Engineering',
+  '04': 'Computer Science & Engineering',
+  '05': 'Electronics & Communication Engineering',
+  '06': 'Urban & Regional Planning',
+  '07': 'Petroleum & Mining Engineering',
+  '08': 'Architecture',
+  '09': 'Physics',
+  '10': 'Chemistry',
+  '11': 'Mathematics',
+  '12': 'Humanities',
+}
+
+// Short department names for display
+const DEPARTMENT_SHORT = {
+  '01': 'CE',
+  '02': 'EEE',
+  '03': 'ME',
+  '04': 'CSE',
+  '05': 'ECE',
+  '06': 'URP',
+  '07': 'PME',
+  '08': 'ARCH',
+  '09': 'PHY',
+  '10': 'CHEM',
+  '11': 'MATH',
+  '12': 'HUM',
+}
+
+// Parse student ID and extract info
+const parseStudentId = (studentId) => {
+  if (!studentId || studentId.length !== 7) {
+    return { valid: false, batch: null, department: null, departmentShort: null, roll: null }
+  }
+  
+  const batchCode = studentId.substring(0, 2)
+  const deptCode = studentId.substring(2, 4)
+  const roll = studentId.substring(4, 7)
+  
+  const batch = 2000 + parseInt(batchCode)
+  const department = DEPARTMENT_CODES[deptCode] || null
+  const departmentShort = DEPARTMENT_SHORT[deptCode] || null
+  
+  return {
+    valid: department !== null,
+    batch,
+    department,
+    departmentShort,
+    deptCode,
+    roll,
+  }
+}
+
 function Signup() {
   const [formData, setFormData] = useState({ fullName: '', email: '', studentId: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [parsedId, setParsedId] = useState({ valid: false, batch: null, department: null, departmentShort: null, roll: null })
   const { register, isLoggedIn } = useAuth()
   const navigate = useNavigate()
 
@@ -20,7 +77,10 @@ function Signup() {
   const handleChange = (e) => {
     const { name, value } = e.target
     if (name === 'studentId') {
-      setFormData({ ...formData, [name]: value.replace(/\D/g, '').slice(0, 7) })
+      const cleanedValue = value.replace(/\D/g, '').slice(0, 7)
+      setFormData({ ...formData, [name]: cleanedValue })
+      // Parse student ID as user types
+      setParsedId(parseStudentId(cleanedValue))
     } else {
       setFormData({ ...formData, [name]: value })
     }
@@ -32,20 +92,30 @@ function Signup() {
     
     if (formData.fullName.length < 3) { setError('Name must be at least 3 characters'); return }
     if (formData.studentId.length !== 7) { setError('Student ID must be 7 digits'); return }
+    
+    // Validate department code
+    const parsed = parseStudentId(formData.studentId)
+    if (!parsed.valid) { 
+      setError('Invalid department code in Student ID. Please check your ID.'); 
+      return 
+    }
+    
     if (formData.password.length < 8) { setError('Password must be at least 8 characters'); return }
     if (formData.password !== formData.confirmPassword) { setError('Passwords do not match'); return }
 
     setIsLoading(true)
     
     setTimeout(() => {
-      const batch = 2000 + parseInt(formData.studentId.substring(0, 2))
       const userData = {
         fullName: formData.fullName,
         studentId: formData.studentId,
         email: formData.email,
         password: formData.password,
-        userType: parseInt(formData.studentId.substring(0, 2)) >= 20 ? 'student' : 'alumni',
-        batch,
+        userType: parsed.batch >= 2020 ? 'student' : 'alumni',
+        batch: parsed.batch,
+        department: parsed.department,
+        departmentShort: parsed.departmentShort,
+        roll: parsed.roll,
       }
       
       const result = register(userData)
@@ -159,9 +229,48 @@ function Signup() {
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                     <i className="fas fa-id-card"></i>
                   </div>
-                  <input type="text" name="studentId" value={formData.studentId} onChange={handleChange} placeholder="7-digit Student ID"
+                  <input type="text" name="studentId" value={formData.studentId} onChange={handleChange} placeholder="7-digit Student ID (e.g., 2204115)"
                     className="input-professional pl-11" />
                 </div>
+                
+                {/* Parsed Student ID Info */}
+                {formData.studentId.length > 0 && (
+                  <div className="mt-2 text-sm">
+                    {formData.studentId.length === 7 ? (
+                      parsedId.valid ? (
+                        <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3 border border-teal-200 dark:border-teal-800">
+                          <div className="flex flex-wrap gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500 dark:text-gray-400">Batch:</span>
+                              <span className="font-semibold text-teal-700 dark:text-teal-400">{parsedId.batch}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500 dark:text-gray-400">Dept:</span>
+                              <span className="font-semibold text-teal-700 dark:text-teal-400">{parsedId.departmentShort}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500 dark:text-gray-400">Roll:</span>
+                              <span className="font-semibold text-teal-700 dark:text-teal-400">{parsedId.roll}</span>
+                            </div>
+                          </div>
+                          <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                            {parsedId.department}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-red-50 dark:bg-red-900/30 rounded-lg p-3 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400">
+                          <i className="fas fa-exclamation-triangle mr-2"></i>
+                          Invalid department code "{formData.studentId.substring(2, 4)}". Please check your Student ID.
+                        </div>
+                      )
+                    ) : (
+                      <div className="text-gray-400 dark:text-gray-500">
+                        <i className="fas fa-info-circle mr-1"></i>
+                        Enter all 7 digits ({7 - formData.studentId.length} more needed)
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -190,7 +299,7 @@ function Signup() {
               <div className="flex items-start gap-2 text-sm">
                 <input type="checkbox" id="terms" className="mt-1 rounded border-gray-300 text-teal-600 focus:ring-teal-500" required />
                 <label htmlFor="terms" className="text-gray-600 dark:text-gray-400">
-                  I agree to the <Link to="/" className="text-teal-600 hover:underline">Terms of Service</Link> and <Link to="/" className="text-teal-600 hover:underline">Privacy Policy</Link>
+                  I agree to the <Link to="/terms" className="text-teal-600 hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-teal-600 hover:underline">Privacy Policy</Link>
                 </label>
               </div>
 
