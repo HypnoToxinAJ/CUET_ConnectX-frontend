@@ -5,12 +5,12 @@
   
   **Connect with CUETians Worldwide**
   
-  🌐 **Live Demo:** [https://cuet-connectx-react.netlify.app](https://cuet-connectx-react.netlify.app)
+  🌐 **Live Demo:** [https://cuet-connect-x.vercel.app](https://cuet-connect-x.vercel.app)
   
   [![React](https://img.shields.io/badge/React-19.0.0-61DAFB?logo=react)](https://reactjs.org/)
   [![Vite](https://img.shields.io/badge/Vite-6.1.0-646CFF?logo=vite)](https://vitejs.dev/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.7-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
-  [![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7?logo=netlify)](https://cuet-connectx-react.netlify.app)
+  [![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?logo=vercel)](https://cuet-connect-x.vercel.app)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 </div>
 
