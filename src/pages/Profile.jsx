@@ -495,21 +495,23 @@ function Profile() {
           </div>
 
           {/* Followers & Following */}
-          <div className="mt-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex gap-6">
-            <div 
-              className="cursor-pointer hover:opacity-80 transition-opacity"
+          <div className="mt-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex gap-3">
+            <button 
+              className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-200 group"
               onClick={() => setShowFollowersModal(true)}
             >
-              <p className="text-2xl font-bold text-gray-800 dark:text-white">{followersList.length}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
-            </div>
-            <div 
-              className="cursor-pointer hover:opacity-80 transition-opacity"
+              <i className="fas fa-users text-teal-600 dark:text-teal-400"></i>
+              <span className="font-bold text-gray-800 dark:text-white">{followersList.length}</span>
+              <span className="text-gray-500 dark:text-gray-400 text-sm">Followers</span>
+            </button>
+            <button 
+              className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-teal-500 dark:hover:border-teal-500 transition-all duration-200 group"
               onClick={() => setShowFollowingModal(true)}
             >
-              <p className="text-2xl font-bold text-gray-800 dark:text-white">{following.length}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Following</p>
-            </div>
+              <i className="fas fa-user-plus text-teal-600 dark:text-teal-400"></i>
+              <span className="font-bold text-gray-800 dark:text-white">{following.length}</span>
+              <span className="text-gray-500 dark:text-gray-400 text-sm">Following</span>
+            </button>
           </div>
         </div>
 
