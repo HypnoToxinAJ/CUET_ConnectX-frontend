@@ -5,9 +5,12 @@
   
   **Connect with CUETians Worldwide**
   
+  🌐 **Live Demo:** [https://cuet-connectx-react.netlify.app](https://cuet-connectx-react.netlify.app)
+  
   [![React](https://img.shields.io/badge/React-19.0.0-61DAFB?logo=react)](https://reactjs.org/)
   [![Vite](https://img.shields.io/badge/Vite-6.1.0-646CFF?logo=vite)](https://vitejs.dev/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.7-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+  [![Netlify](https://img.shields.io/badge/Netlify-Deployed-00C7B7?logo=netlify)](https://cuet-connectx-react.netlify.app)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 </div>
 
@@ -20,11 +23,14 @@ CUET ConnectX is a modern web platform designed to connect students and alumni o
 ### ✨ Key Features
 
 - 🔐 **User Authentication** - Secure login/signup with Student ID verification
+- 👤 **User Profiles** - Customizable profiles with cover & profile image upload
+- 👥 **Follow System** - Follow/unfollow members and see your followers & following lists
 - 💼 **Job Board** - Browse and apply to job opportunities shared by the community
 - 🎓 **Scholarships** - Discover funding opportunities for academic pursuits
-- 👥 **Community Network** - Connect with students and alumni across the globe
+- 🌐 **Community Network** - Connect with students and alumni across the globe
 - 🌙 **Dark Mode** - Toggle between light and dark themes
 - 📱 **Responsive Design** - Optimized for desktop, tablet, and mobile devices
+- 💾 **Persistent Data** - Profile data and images saved locally per user
 
 ---
 
@@ -39,8 +45,8 @@ CUET ConnectX is a modern web platform designed to connect students and alumni o
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/cuet-connectx-react.git
-   cd cuet-connectx-react
+   git clone https://github.com/sayed-115/CUET-ConnectX.git
+   cd CUET-ConnectX
    ```
 
 2. **Install dependencies**
@@ -58,25 +64,31 @@ CUET ConnectX is a modern web platform designed to connect students and alumni o
    http://localhost:5173
    ```
 
+### Demo Account
+```
+Student ID: 2204115
+Password: demo1234
+```
+
 ---
 
 ## 📁 Project Structure
 
 ```
-cuet-connectx-react/
+CUET-ConnectX/
 ├── public/                 # Static assets
 ├── src/
 │   ├── assets/
 │   │   ├── images/        # Image assets
 │   │   └── logos/         # Logo files (CUET logo)
 │   ├── components/
-│   │   ├── Navbar.jsx     # Navigation bar component
+│   │   ├── Navbar.jsx     # Navigation bar with profile sync
 │   │   └── Footer.jsx     # Footer component
 │   ├── context/
-│   │   ├── AuthContext.jsx    # Authentication state management
+│   │   ├── AuthContext.jsx    # Auth, following & followers management
 │   │   └── ThemeContext.jsx   # Theme (dark/light) management
 │   ├── pages/
-│   │   ├── Home.jsx       # Landing page
+│   │   ├── Home.jsx       # Landing page with hero & gallery
 │   │   ├── Jobs.jsx       # Job listings page
 │   │   ├── Scholarships.jsx   # Scholarships page
 │   │   ├── Community.jsx  # Community members page
@@ -84,11 +96,13 @@ cuet-connectx-react/
 │   │   ├── FAQ.jsx        # Frequently asked questions
 │   │   ├── Login.jsx      # User login page
 │   │   ├── Signup.jsx     # User registration page
-│   │   └── Profile.jsx    # User profile page
-│   ├── App.jsx            # Main application component
+│   │   ├── Profile.jsx    # User profile with image upload
+│   │   └── MemberProfile.jsx  # View other member profiles
+│   ├── App.jsx            # Main app with scroll-to-top
 │   ├── main.jsx           # Application entry point
 │   └── index.css          # Global styles & Tailwind config
 ├── index.html             # HTML template
+├── netlify.toml           # Netlify deployment config
 ├── package.json           # Project dependencies
 ├── vite.config.js         # Vite configuration
 └── README.md              # Project documentation
@@ -106,6 +120,7 @@ cuet-connectx-react/
 | **Tailwind CSS 4** | Utility-first CSS Framework |
 | **Font Awesome 6** | Icon Library |
 | **Google Fonts** | Typography (Inter, Poppins) |
+| **Netlify** | Deployment & Hosting |
 
 ---
 
@@ -127,6 +142,18 @@ cuet-connectx-react/
 - User type classification (Student/Alumni)
 - Persistent login state with localStorage
 
+### User Profiles
+- **Cover Image Upload** - Customizable profile cover with compression
+- **Profile Picture Upload** - Optimized image upload for mobile & desktop
+- **Profile Info** - About, contact, social links, education, skills
+- **Real-time Sync** - Profile picture syncs across navbar
+
+### Follow System
+- **Follow/Unfollow** - Follow members from their profile page
+- **Followers List** - See who follows you with modal view
+- **Following List** - View and manage who you follow
+- **Persistent Storage** - Follow relationships saved locally
+
 ### Job Board
 - Search functionality (by title, company, location)
 - Apply tracking per session
@@ -139,13 +166,32 @@ cuet-connectx-react/
 
 ### Community
 - Member profiles with batch and department info
-- Connect/Disconnect functionality
+- Follow/Unfollow functionality
 - Profile initials avatars with gradient backgrounds
 
 ### Theme System
 - System-aware dark mode
 - Persistent theme preference
 - Smooth transition animations
+
+### UX Improvements
+- Scroll to top on navigation
+- Loading states for image uploads
+- Mobile-optimized file inputs
+- Toast notifications for actions
+
+---
+
+## 🚀 Deployment
+
+The app is deployed on **Netlify** with automatic builds from the main branch.
+
+### Deploy your own:
+
+1. Fork this repository
+2. Connect to Netlify
+3. Set build command: `npm run build`
+4. Set publish directory: `dist`
 
 ---
 
@@ -178,4 +224,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <p>Made with ❤️ for CUETians</p>
   <p>© 2026 CUET ConnectX. All rights reserved.</p>
+  
+  **[🌐 Visit Live Site](https://cuet-connectx-react.netlify.app)**
 </div>
