@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [registeredUsers, setRegisteredUsers] = useState([])
   const [following, setFollowing] = useState([]) // List of member IDs the user follows
+  const [followers, setFollowers] = useState([]) // List of user IDs who follow the current user
 
   useEffect(() => {
     // Load current user
@@ -31,6 +32,12 @@ export function AuthProvider({ children }) {
       const savedFollowing = localStorage.getItem(`following_${parsedUser.studentId}`)
       if (savedFollowing) {
         setFollowing(JSON.parse(savedFollowing))
+      }
+      
+      // Load followers list for this user
+      const savedFollowers = localStorage.getItem(`followers_${parsedUser.studentId}`)
+      if (savedFollowers) {
+        setFollowers(JSON.parse(savedFollowers))
       }
     }
     
@@ -108,9 +115,10 @@ export function AuthProvider({ children }) {
     setUser(null)
     setIsLoggedIn(false)
     setFollowing([])
+    setFollowers([])
   }
 
-  // Follow a member
+  // Follow a member - also add current user to member's followers
   const followMember = (memberId) => {
     if (!user) return
     const memberIdStr = String(memberId)
@@ -118,16 +126,28 @@ export function AuthProvider({ children }) {
       const newFollowing = [...following, memberIdStr]
       setFollowing(newFollowing)
       localStorage.setItem(`following_${user.studentId}`, JSON.stringify(newFollowing))
+      
+      // Add current user to the member's followers list
+      const memberFollowers = JSON.parse(localStorage.getItem(`followers_${memberIdStr}`) || '[]')
+      if (!memberFollowers.includes(user.studentId)) {
+        memberFollowers.push(user.studentId)
+        localStorage.setItem(`followers_${memberIdStr}`, JSON.stringify(memberFollowers))
+      }
     }
   }
 
-  // Unfollow a member
+  // Unfollow a member - also remove current user from member's followers
   const unfollowMember = (memberId) => {
     if (!user) return
     const memberIdStr = String(memberId)
     const newFollowing = following.filter(id => id !== memberIdStr)
     setFollowing(newFollowing)
     localStorage.setItem(`following_${user.studentId}`, JSON.stringify(newFollowing))
+    
+    // Remove current user from the member's followers list
+    const memberFollowers = JSON.parse(localStorage.getItem(`followers_${memberIdStr}`) || '[]')
+    const updatedFollowers = memberFollowers.filter(id => id !== user.studentId)
+    localStorage.setItem(`followers_${memberIdStr}`, JSON.stringify(updatedFollowers))
   }
 
   // Check if following a member
@@ -138,6 +158,23 @@ export function AuthProvider({ children }) {
   // Get following list
   const getFollowingList = () => following
 
+  // Get followers list - reload from localStorage to get latest
+  const getFollowers = () => {
+    if (!user) return []
+    const savedFollowers = localStorage.getItem(`followers_${user.studentId}`)
+    return savedFollowers ? JSON.parse(savedFollowers) : []
+  }
+
+  // Refresh followers from localStorage
+  const refreshFollowers = () => {
+    if (user) {
+      const savedFollowers = localStorage.getItem(`followers_${user.studentId}`)
+      if (savedFollowers) {
+        setFollowers(JSON.parse(savedFollowers))
+      }
+    }
+  }
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -147,10 +184,13 @@ export function AuthProvider({ children }) {
       register, 
       updateUser,
       following,
+      followers,
       followMember,
       unfollowMember,
       isFollowingMember,
-      getFollowingList
+      getFollowingList,
+      getFollowers,
+      refreshFollowers
     }}>
       {children}
     </AuthContext.Provider>

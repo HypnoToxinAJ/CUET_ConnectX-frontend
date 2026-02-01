@@ -16,10 +16,12 @@ const membersData = {
 }
 
 function Profile() {
-  const { user, isLoggedIn, following, unfollowMember } = useAuth()
+  const { user, isLoggedIn, following, unfollowMember, getFollowers, registeredUsers } = useAuth()
   const navigate = useNavigate()
   const [showShareToast, setShowShareToast] = useState(false)
   const [showFollowingModal, setShowFollowingModal] = useState(false)
+  const [showFollowersModal, setShowFollowersModal] = useState(false)
+  const [followersList, setFollowersList] = useState([])
   
   // Check if demo user (Md Abu Sayed)
   const isDemoUser = user?.fullName === 'Md Abu Sayed'
@@ -29,6 +31,16 @@ function Profile() {
   const [profileImage, setProfileImage] = useState(isDemoUser ? sayedProfile : null)
   const [isUploadingCover, setIsUploadingCover] = useState(false)
   const [isUploadingProfile, setIsUploadingProfile] = useState(false)
+  
+  // Load followers when modal opens
+  useEffect(() => {
+    if (showFollowersModal && user) {
+      const savedFollowers = localStorage.getItem(`followers_${user.studentId}`)
+      if (savedFollowers) {
+        setFollowersList(JSON.parse(savedFollowers))
+      }
+    }
+  }, [showFollowersModal, user])
   
   // Get default profile data for a user
   const getDefaultProfileData = (userData) => ({
@@ -109,6 +121,13 @@ function Profile() {
         const savedProfile = localStorage.getItem(`profileImage_${user.studentId}`)
         setCoverImage(savedCover || null)
         setProfileImage(savedProfile || null)
+      }
+      // Load followers list
+      const savedFollowers = localStorage.getItem(`followers_${user.studentId}`)
+      if (savedFollowers) {
+        setFollowersList(JSON.parse(savedFollowers))
+      } else {
+        setFollowersList([])
       }
     }
   }, [user?.studentId])
@@ -306,6 +325,69 @@ function Profile() {
         </div>
       )}
 
+      {/* Followers Modal */}
+      {showFollowersModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowFollowersModal(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Followers ({followersList.length})</h3>
+              <button onClick={() => setShowFollowersModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <i className="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-96 p-4">
+              {followersList.length === 0 ? (
+                <div className="text-center py-8">
+                  <i className="fas fa-users text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                  <p className="text-gray-500 dark:text-gray-400">You don't have any followers yet</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
+                    Share your profile to get followers
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {followersList.map(followerId => {
+                    // Try to find in membersData first, then in registered users
+                    const member = Object.values(membersData).find(m => String(m.id) === followerId) 
+                    if (member) {
+                      return (
+                        <div key={followerId} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                          <Link 
+                            to={`/member/${member.id}`} 
+                            onClick={() => setShowFollowersModal(false)}
+                            className="flex items-center gap-3 flex-1"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white font-semibold text-sm">
+                              {member.initials}
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-800 dark:text-white">{member.name}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{member.type} • {member.department} • Batch {member.batch}</p>
+                            </div>
+                          </Link>
+                        </div>
+                      )
+                    }
+                    // Show student ID if member not found in sample data
+                    return (
+                      <div key={followerId} className="flex items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-gray-400 to-gray-500 flex items-center justify-center text-white font-semibold text-sm">
+                          <i className="fas fa-user"></i>
+                        </div>
+                        <div className="ml-3">
+                          <p className="font-medium text-gray-800 dark:text-white">User {followerId}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Student ID: {followerId}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Share Toast */}
       {showShareToast && (
         <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-xl shadow-lg animate-fade-in-up flex items-center gap-2">
@@ -414,8 +496,11 @@ function Profile() {
 
           {/* Followers & Following */}
           <div className="mt-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex gap-6">
-            <div>
-              <p className="text-2xl font-bold text-gray-800 dark:text-white">{profileData.followers}</p>
+            <div 
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setShowFollowersModal(true)}
+            >
+              <p className="text-2xl font-bold text-gray-800 dark:text-white">{followersList.length}</p>
               <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
             </div>
             <div 
