@@ -6,7 +6,7 @@ import coverDefault from '../assets/images/cover.png'
 
 // Sample member data for following list (same as MemberProfile)
 const membersData = {
-  1: { id: 1, name: 'Anupam Paul', initials: 'AP', type: 'Student', department: 'CSE', batch: '2022' },
+  1: { id: 1, name: 'Anupam Paul', studentId: '2204116', initials: 'AP', type: 'Student', department: 'CSE', batch: '2022' },
   2: { id: 2, name: 'MD Abu Sayed', initials: 'AS', type: 'Student', department: 'CSE', batch: '2022' },
   3: { id: 3, name: 'Fatima Rahman', initials: 'FR', type: 'Student', department: 'EEE', batch: '2023' },
   4: { id: 4, name: 'Karim Hassan', initials: 'KH', type: 'Student', department: 'ME', batch: '2021' },
@@ -30,7 +30,7 @@ function Profile() {
   
   // Image states - only show default images for demo user
   const [coverImage, setCoverImage] = useState(isDemoUser ? coverDefault : null)
-  const [profileImage, setProfileImage] = useState(isDemoUser ? sayedProfile : null)
+  const [profileImage, setProfileImage] = useState(isDemoUser ? meProfile : null)
   const [isUploadingCover, setIsUploadingCover] = useState(false)
   const [isUploadingProfile, setIsUploadingProfile] = useState(false)
   

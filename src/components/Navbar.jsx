@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import cuetLogo from '../assets/logos/CUET_Vector_Logo.svg.png'
-import sayedProfile from '../assets/images/sayed.jpg'
+import meProfile from '../assets/images/me.jpg'
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -13,7 +13,7 @@ function Navbar() {
   const [profileImage, setProfileImage] = useState(null)
 
   // Check if demo user
-  const isDemoUser = user?.fullName === 'Md Abu Sayed'
+  const isDemoUser = user?.fullName === 'Anupam Paul'
 
   // Load profile image from localStorage
   useEffect(() => {
@@ -21,7 +21,7 @@ function Navbar() {
       const savedImage = localStorage.getItem(`profileImage_${user.studentId}`)
       setProfileImage(savedImage)
     } else if (isDemoUser) {
-      setProfileImage(sayedProfile)
+      setProfileImage(meProfile)
     } else {
       setProfileImage(null)
     }
