@@ -4,10 +4,10 @@ const AuthContext = createContext()
 
 // Demo user data
 const DEMO_USER = {
-  fullName: 'Md Abu Sayed',
-  studentId: '2204115',
-  email: 'u2204115@student.cuet.ac.bd',
-  password: 'demo1234',
+  fullName: 'Anupam Paul',
+  studentId: '2204116',
+  email: 'u2204116@student.cuet.ac.bd',
+  password: 'anupam116',
   userType: 'current student',
   batch: 2022,
 }

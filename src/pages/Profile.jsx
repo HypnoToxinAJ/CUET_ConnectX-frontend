@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import sayedProfile from '../assets/images/sayed.jpg'
+import meProfile from '../assets/images/me.jpg'
 import coverDefault from '../assets/images/cover.png'
 
 // Sample member data for following list (same as MemberProfile)
@@ -25,8 +25,8 @@ function Profile() {
   const [showCoverMenu, setShowCoverMenu] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   
-  // Check if demo user (Md Abu Sayed)
-  const isDemoUser = user?.fullName === 'Md Abu Sayed'
+  // Check if demo user (Anupam Paul)
+  const isDemoUser = user?.fullName === 'Anupam Paul'
   
   // Image states - only show default images for demo user
   const [coverImage, setCoverImage] = useState(isDemoUser ? coverDefault : null)
@@ -68,13 +68,13 @@ function Profile() {
   // Demo user profile data
   const getDemoProfileData = () => ({
     about: 'Passionate computer science student interested in machine learning and web development. Looking for internship opportunities and research collaborations.',
-    email: 'u2204115@student.cuet.ac.bd',
+    email: 'u2204116@student.cuet.ac.bd',
     address: 'Dhaka, Bangladesh',
     socialLinks: {
-      linkedin: 'https://linkedin.com/in/mdabusayed',
-      github: 'https://github.com/mdabusayed',
-      facebook: 'https://facebook.com/mdabusayed',
-      portfolio: 'https://mdabusayed.dev'
+      linkedin: 'https://linkedin.com/in/anupampaul',
+      github: 'https://github.com/AnupamPaul',
+      facebook: 'https://facebook.com/anupampaul',
+      portfolio: 'https://anupampaul.dev'
     },
     currentProfession: 'Software Engineering Intern at TechCorp',
     previousProfession: 'Web Developer at StartupXYZ',
